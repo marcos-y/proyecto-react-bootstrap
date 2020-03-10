@@ -1,0 +1,74 @@
+//@ts-check
+import React, { useState, useEffect } from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import Formulario from "./components/formulario/Formulario";
+import Lista from "./components/lista/Lista";
+import axios from "axios";
+import { Toast, Alert } from "react-bootstrap";
+
+const headers = {
+  "Content-Type": "application/json"
+};
+
+function App() {
+  const [listaProductos, setListaProductos] = useState([]);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/producto")
+      .then(respuesta => {
+        // respuesta.data viene la informacion
+        const productos = respuesta.data;        
+        setListaProductos([...productos]);
+      })
+      .catch(error => {
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
+      });
+  }, [])
+
+
+
+  const handleAgregarProducto = producto => {
+    // Primero, ir a BACKEND
+    axios
+      .post("http://localhost:8000/producto", producto)
+      .then(respuesta => {
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 5000);
+        setListaProductos([...listaProductos, producto]);
+      })
+      .catch(error => {
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false);
+        }, 5000);
+        console.log("error: ", error);
+      });
+
+  };
+
+  return (
+    <div className="container">
+      <div className="content bg-white p-5 rounded shadow">
+        {showSuccess && (
+          <Alert variant="success">Producto agregado con exito</Alert>
+        )}
+        {showError && (
+          <Alert variant="danger">ERROR</Alert>
+        )}
+        <Formulario onAgregarProducto={handleAgregarProducto} />
+        <Lista lista={listaProductos} />
+      </div>
+    </div>
+  );
+}
+
+export default App;

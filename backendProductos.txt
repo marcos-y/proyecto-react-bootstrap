@@ -1,0 +1,92 @@
+const express = require("express");
+const app = express();
+const cors = require("cors");
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
+
+app.use(cors());
+app.options("*", cors());
+
+app.post("/producto", (req, res) => {
+  const producto = req.body;
+  productos = [...productos, producto]; // esto seria ir a la DB y agregar el producto
+  console.log("productos: ", productos);
+  res.status(200).json({ mensaje: "producto agregado" });
+});
+
+app.get("/producto/:idProducto", (req, res) => {
+  console.log(req.params.idProducto);
+
+  const producto = productos.find(
+    producto => producto.id == req.params.idProducto
+  );
+  res.json(producto);
+});
+
+app.get("/producto", (req, res) => {
+  res.json(productos);
+});
+
+let productos = [];
+
+const personas = [
+  {
+    userId: 1,
+    id: 1,
+    title: "delectus aut autem",
+    completed: false
+  },
+  {
+    userId: 1,
+    id: 2,
+    title: "quis ut nam facilis et officia qui",
+    completed: false
+  },
+  {
+    userId: 1,
+    id: 3,
+    title: "fugiat veniam minus",
+    completed: false
+  }
+];
+
+// app.get("/personas", (req, res) => {
+//   res.send(personas);
+// });
+
+// app.get("/personas/:idPersona", (req, res) => {
+//   const idPersona = req.params.idPersona;
+//   const persona = personas.find(personita => personita.id === parseInt(idPersona));
+//   res.send(persona);
+// });
+
+// app.put("/personas/:idPersona", (req, res) => {
+//    const idPersona = req.params.idPersona;
+//    const newTitle = req.body.title;
+//    const persona = personas.find(persona => persona.id == idPersona);
+//    persona.title = newTitle;
+
+//   res.json({
+//      code: 200,
+//      message: 'PERSON TITLE MODIFIED',
+//      persona});
+// });
+
+// app.delete("/personas/:idPersona", (req, res) => {
+//    const personasAux = personas.filter(persona => persona.id != req.params.idPersona)
+//    res.json({
+//       code: 200,
+//       message: 'PERSON DELETE',
+//       personas: personasAux});
+// });
+
+// app.use("*", (req, res) => {
+//   res.send("NO SE ENCONTRO");
+// });
+
+const PORT = 8000;
+app.listen(PORT, () => {
+  console.log("HOLA MUNDO");
+  console.log("HOLA MUNDO");
+  console.log("estoy funcionando");
+});

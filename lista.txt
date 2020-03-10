@@ -1,0 +1,79 @@
+//@ts-check
+import React, { useState, useEffect } from "react";
+import { Form, ListGroup, Modal } from "react-bootstrap";
+import axios from "axios";
+
+const headers = {
+  "Content-Type": "application/json"
+};
+
+export default function Lista({ lista }) {
+  const [listaFiltrada, setListaFiltrada] = useState(lista);
+  const [input, setInput] = useState("");
+  const [showModalProducto, setShowModalProducto] = useState(false);
+  const [producto, setProducto] = useState("");
+
+  useEffect(() => {
+    setListaFiltrada(lista);
+  }, [lista]);
+
+  const handleOnChange = event => {
+    const value = event.target.value;
+    setInput(value);
+    const arrayFiltrado = lista.filter(producto =>
+      producto.nombre.includes(value)
+    );
+    setListaFiltrada(arrayFiltrado);
+  };
+
+  const handleVerProducto = id => {
+    axios
+      .get(`http://localhost:8000/producto/${id}`)
+      .then(respuesta => {
+        // respuesta.data viene la informacion
+        setProducto(respuesta.data);
+        setShowModalProducto(true);
+      })
+      .catch(error => {
+      });
+  };
+
+  return (
+    <div>
+      <Modal
+        show={showModalProducto}
+        onHide={() => setShowModalProducto(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>PRODUCTO</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Nombre: {producto.nombre} <br />
+          Precio: {producto.precio} <br />
+          Categoria: {producto.categoria} <br />
+          Descripcion: {producto.descripcion} <br />
+        </Modal.Body>
+      </Modal>
+      <i className="fas fa-search"></i>
+      <h2>Busqueda</h2>
+      <Form>
+        <Form.Group controlId="formBasicEmail">
+          <Form.Control
+            type="text"
+            value={input}
+            onChange={handleOnChange}
+            placeholder="Ingrese parametros"
+          />
+        </Form.Group>
+      </Form>
+      <ListGroup>
+        {listaFiltrada.map(producto => (
+          <ListGroup.Item key={producto.id}>
+            {producto.nombre.toUpperCase()} - ${producto.precio}
+            <button onClick={() => handleVerProducto(producto.id)}>VER</button>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </div>
+  );
+}

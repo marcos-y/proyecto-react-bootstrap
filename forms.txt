@@ -1,0 +1,64 @@
+//@ts-check
+import React, { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+
+export default function Formulario({ onAgregarProducto }) {
+  const [nombre, setNombre] = useState("");
+  const [precio, setPrecio] = useState("");
+  const [categoria, setCategoria] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    const id = Date.now();
+    onAgregarProducto({ id, nombre, precio, categoria, descripcion });
+  };
+
+  return (
+    <div>
+      <h2>Agregar producto</h2>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="exampleForm.ControlInput1">
+          <Form.Label>Nombre</Form.Label>
+          <Form.Control
+            type="text"
+            value={nombre}
+            onChange={e => setNombre(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="exampleForm.ControlInput1">
+          <Form.Label>Precio</Form.Label>
+          <Form.Control
+            type="text"
+            value={precio}
+            onChange={e => setPrecio(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group controlId="exampleForm.ControlSelect1">
+          <Form.Label>Categoria</Form.Label>
+          <Form.Control
+            as="select"
+            value={categoria}
+            onChange={e => setCategoria(e.target.value)}
+          >
+            <option value="">Seleccione una opcion</option>
+            <option value="bebible">Bebible</option>
+            <option value="comestible">Comestible</option>
+          </Form.Control>
+        </Form.Group>
+        <Form.Group controlId="exampleForm.ControlTextarea1">
+          <Form.Label>Descripcion</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows="3"
+            value={descripcion}
+            onChange={e => setDescripcion(e.target.value)}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Agregar producto
+        </Button>
+      </Form>
+    </div>
+  );
+}
